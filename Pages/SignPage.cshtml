@@ -1,0 +1,115 @@
+﻿@page
+@model Velo.Pages.SignPage
+
+@{
+    ViewData["Title"] = "Velo - Sign Page";
+    Layout = "_Layout";
+}
+
+<div class="align-items-center container d-flex justify-content-center h-100">
+    <div class="col-6 d-flex flex-column gap-2">
+        <div class="d-flex flex-column gap-1">
+            <h1 class="fw-bold">
+                Login
+            </h1>
+
+            <p class="fw-semibold">
+                Hi, welcome back <span class="fs-5">👋</span>
+            </p>
+        </div>
+
+        <div class="d-flex flex-column gap-1">
+            <a href="#" class="btn btn-secondary px-3 py-2">
+                <i class="fa-brands fa-google fs-5 me-2"></i>
+                <span class="fw-bold">
+                        Login with Google
+                    </span>
+            </a>
+        </div>
+
+        <form action="#">
+            <div class="d-flex flex-column gap-2">
+                <div>
+                    <label class="form-label" for="emailInput" >
+                        Email Address
+                    </label>
+
+                    <input
+                        id="emailInput"
+                        class="form-control"
+                        type="email"
+                        placeholder="Enter your email address"
+                    />
+                </div>
+
+                <div>
+                    <label class="form-label" for="passwordInput" >
+                        Password
+                    </label>
+
+                    <input
+                        id="passwordInput"
+                        class="form-control"
+                        type="password"
+                        placeholder="Enter your password"
+                    />
+                </div>
+
+                <div class="align-items-center d-flex justify-content-between">
+                    <div class="form-check">
+                        <input
+                            id="rememberInput"
+                            class="form-check-input"
+                            type="checkbox"
+                            value=""
+                        />
+
+                        <label class="form-check-label" for="rememberInput">
+                            Remember Me
+                        </label>
+                    </div>
+
+                    <div>
+                        <a href="#">
+                            Forgot Password?
+                        </a>
+                    </div>
+                </div>
+
+                <div class="d-flex px-2">
+                    <button class="btn btn-primary flex-fill" type="submit">
+                        Sign In
+                    </button>
+                </div>
+
+                <div class="align-items-center d-flex justify-content-center">
+                    <p>
+                        Not registered?
+                        <a href="#" class="text-decoration-none">
+                            Create an account
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </a>
+                    </p>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        body {
+            height: 100vh;
+            width: 100vw;
+        }
+        
+        main {
+            height: 100%;
+            width: 100%;
+        }
+    </style>
+}
+
+@section Scripts {
+    <script></script>
+}
