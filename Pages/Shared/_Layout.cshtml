@@ -15,6 +15,19 @@
 </head>
 <body>
 
+<header class="align-items-center bg-primary d-flex justify-content-between p-3">
+    <a href="#" class="fs-4 fw-bold text-decoration-none text-primary">Velo</a>
+
+    <div class="d-flex align-items-center gap-3">
+        <button id="theme-toggle" class="btn btn-primary rounded-pill">
+            <i class="fa-solid fa-moon"></i>
+            <i class="fa-solid fa-sun"></i>
+        </button>
+
+        <a href="/Dashboard" class="btn btn-primary">Entrar</a>
+    </div>
+</header>
+
 <main role="main">
     @RenderBody()
 </main>
@@ -23,7 +36,29 @@
 <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
 <script src="~/js/site.js" asp-append-version="true"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const themeToggle = document.getElementById('theme-toggle');
+        const body = document.body;
 
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme) {
+            body.classList.add(savedTheme);
+        } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            body.classList.add('dark');
+        }
+        
+        themeToggle.addEventListener('click', () => {
+            if (body.classList.contains('dark')) {
+                body.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+            } else {
+                body.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+            }
+        });
+    });
+</script>
 @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

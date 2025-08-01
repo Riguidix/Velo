@@ -34,7 +34,47 @@ html {
   font-size: 16px;
 }
 
+h1, h2, h3, h4, h5, h6, p {
+  color: var(--text-primary);
+}
+
 body {
+  background-color: var(--background-primary);
+  color: var(--text-primary);
+  font-family: 'Inter', sans-serif;
+  line-height: 1.6;
+}
+
+.bg-primary {
   background-color: var(--background-primary) !important;
   color: var(--text-primary) !important;
+}
+
+.text-muted {
+  color: var(--text-secondary) !important;
+}
+
+.card {
+  background-color: var(--background-secondary) !important;
+}
+
+.btn-primary {
+  background-color: var(--accent-color);
+}
+/* Oculta el sol y muestra la luna por defecto (tema claro) */
+#theme-toggle .fa-sun {
+  display: none;
+}
+
+#theme-toggle .fa-moon {
+  display: inline-block;
+}
+
+/* En modo oscuro, haz lo opuesto */
+.dark #theme-toggle .fa-sun {
+  display: inline-block;
+}
+
+.dark #theme-toggle .fa-moon {
+  display: none;
 }
