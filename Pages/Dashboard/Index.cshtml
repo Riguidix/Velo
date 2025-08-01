@@ -25,9 +25,153 @@
         <partial name="Tables/_FilterBar" />
 
         @* Tabla de PDF *@
-        <partial name="Tables/_PDFTable" />
+        <partial 
+            name="Tables/_PDFTable"
+            model="Model.PdfFiles"
+        />
     </div>
 </div>
 
 @* Modal de subida de archivos *@
 <partial name="Modals/_UploadModal" />
+
+@section Styles {
+    <style></style>
+}
+
+@section Scripts {
+    <script>                
+        $(function () {
+            const dropZone = document.querySelector('.border-dashed');
+            const pdfInput = document.getElementById('pdfInput');
+            const textContainer = document.getElementById('textContainer');
+            const btnSubmit = document.getElementById('btnSubmit');
+            let uploadedFile = null;
+
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                dropZone.addEventListener(eventName, preventDefaults, false);
+            });
+
+            toastr.options = {
+                "closeButton": true,
+                "newestOnTop": true,
+                "positionClass": "toast-bottom-center",
+                "preventDuplicates": true,
+                "showDuration": "500",
+                "hideDuration": "1000",
+                "timeOut": "5000",
+                "extendedTimeOut": "1000",
+                "showEasing": "swing",
+                "hideEasing": "linear",
+                "showMethod": "fadeIn",
+                "hideMethod": "fadeOut"
+            };
+
+            // Prevent that the files open in browser
+            function preventDefaults(e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+
+            dropZone.addEventListener('dragenter', () => {
+                dropZone.classList.add('border-primary');
+                dropZone.classList.remove('border-dashed');
+            }, false);
+
+            dropZone.addEventListener('dragleave', () => {
+                dropZone.classList.remove('border-primary');
+                dropZone.classList.add('border-dashed');
+            }, false);
+
+            dropZone.addEventListener('drop', handleDrop, false);
+
+            function handleDrop(e) {
+                const dt = e.dataTransfer;
+                const files = dt.files;
+                
+                handleFiles(files);
+
+                dropZone.classList.remove('border-primary');
+                dropZone.classList.add('border-dashed');
+            }
+
+            pdfInput.addEventListener('change', (e) => {
+                handleFiles(e.target.files);
+            });
+
+            function handleFiles(files) {
+                if (files.length === 0) {
+                    return;
+                }
+
+                const file = files[0];
+
+                const maxSizeMB = 10;
+                const maxSizeBytes = maxSizeMB * 1024 * 1024;
+
+                if (file.type !== 'application/pdf') {
+                    toastr.error('You can only upload PDF file format.', 'Wrong Format');
+                    resetModal();
+                    return;
+                }
+
+                if (file.size > maxSizeBytes) {
+                    toastr.error('The size of the file should be less than 10Mb.', 'Size exceed');
+                    resetModal();
+                    return;
+                }
+
+                uploadedFile = file;
+                textContainer.innerHTML = `<span class="fw-bold">${file.name}</span><br><span class="text-secondary small">${(file.size / 1024 / 1024).toFixed(2)} MB</span>`;
+                btnSubmit.disabled = false;
+            }
+
+            function resetModal() {
+                uploadedFile = null;
+                pdfInput.value = '';
+                textContainer.innerHTML = '';
+                textContainer.innerHTML = `
+                    Drop your files here, or 
+                    <a href="#" class="ms-1 text-primary text-decoration-none" onclick="document.getElementById('pdfInput').click();">
+                        click to browse
+                    </a>
+                `;
+                btnSubmit.disabled = true;
+            }
+            
+            const pdfUploadModal = document.getElementById('pdfUpload');
+            pdfUploadModal.addEventListener('hidden.bs.modal', resetModal);
+            
+            $(btnSubmit).on('click', () => {
+                if (!uploadedFile) {
+                    return;
+                }
+
+                const formData = new FormData();
+                formData.append('file', uploadedFile);
+
+                $.ajax({
+                    url: '?handler=UploadFile',
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    headers: {
+                        'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
+                    },
+                    success: (response) => {
+                        toastr.success('The file was uploaded successfully!', 'File Uploaded');
+                        
+                        $('#pdfUpload').modal('hide');
+                        location.reload();
+                    },
+                    error: (jqXHR, textStatus, errorThrown) => {
+                        toastr.error('An error occurred while uploading the file.', 'Server Error');
+                        
+                        console.error('Error:', textStatus, errorThrown);
+                    }
+                });
+            });
+        });
+    </script>
+}
