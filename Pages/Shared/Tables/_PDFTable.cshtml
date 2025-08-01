@@ -35,11 +35,11 @@
                             @pdf.UploadDate
                         </td>
                         <td class="text-center">
-                            <button class="btn btn-sm btn-secondary me-1">
+                            <button class="btn btn-sm btn-secondary me-1" onclick="previewPdf(@pdf.Id)">
                                 <i class="fa-solid fa-eye"></i>
                             </button>
-                    
-                            <button class="btn btn-sm btn-secondary">
+
+                            <button class="btn btn-sm btn-secondary" onclick="downloadPdf(@pdf.Id)">
                                 <i class="fa-solid fa-download"></i>
                             </button>
                         </td>

@@ -33,6 +33,9 @@
 </div>
 
 @* Modal de subida de archivos *@
+<partial name="Modals/_PreviewModal" />
+
+@* Modal de subida de archivos *@
 <partial name="Modals/_UploadModal" />
 
 @section Styles {
@@ -40,7 +43,26 @@
 }
 
 @section Scripts {
-    <script>                
+    <script>
+        function previewPdf(id) {
+            const pdfUrl = `?handler=PdfFileById&id=${id}`;
+            
+            const pdfFrame = document.getElementById('pdfFrame');
+            const pdfViewerModal = new bootstrap.Modal(document.getElementById('pdfViewerModal'));
+            
+            pdfFrame.src = pdfUrl;
+            pdfViewerModal.show();
+        }
+
+        function downloadPdf(id) {
+            const downloadUrl = `?DownloadPdfFileById&id=${id}`;
+            window.location.href = downloadUrl;
+        }
+        
+        document.getElementById('pdfViewerModal').addEventListener('hidden.bs.modal', function () {
+            document.getElementById('pdfFrame').src = '';
+        });    
+                  
         $(function () {
             const dropZone = document.querySelector('.border-dashed');
             const pdfInput = document.getElementById('pdfInput');

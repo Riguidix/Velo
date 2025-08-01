@@ -40,7 +40,7 @@ public class PdfService(VeloDbContext context) : IPDFService
             {
                 FileName = pdfFile.FileName,
                 FileSize = (double)pdfFile.Length / (1024 * 1024), // Calculate the Mb Size
-                FilePath = fullPath,
+                FilePath = filePath,
                 UploadDate = DateTime.Now
             };
 
@@ -60,9 +60,9 @@ public class PdfService(VeloDbContext context) : IPDFService
         return await context.PdfFiles.ToListAsync();
     }
 
-    public async Task<PdfFile> GetPdfFileByIdAsync()
+    public async Task<PdfFile?> GetPdfFileByIdAsync(int id)
     {
-        throw new NotImplementedException();
+        return await context.PdfFiles.FirstOrDefaultAsync(p => p.Id == id);
     }
 
     public async Task<PdfFile> UpdatePdfAsync(PdfFile pdfFile)
