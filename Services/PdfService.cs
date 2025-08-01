@@ -1,13 +1,12 @@
-﻿using Velo.Models;
-using Velo.Models.Dtos;
+﻿using Microsoft.EntityFrameworkCore;
+
+using Velo.Models;
 using Velo.Services.Interfaces;
 
 namespace Velo.Services;
 
 public class PdfService(VeloDbContext context) : IPDFService
 {
-    private readonly VeloDbContext _context = context;
-
     public async Task<PdfFile?> SavePdfAsync(IFormFile pdfFile)
     {
         // There's no File
@@ -25,11 +24,17 @@ public class PdfService(VeloDbContext context) : IPDFService
 
             var uniqueName = $"{Guid.NewGuid().ToString()}{extension}";
             var folderPath = Path.Combine("PrivateFiles", "Pdfs");
+            var fullPath = Path.Combine(Directory.GetCurrentDirectory(), folderPath);
 
             // The folder doesn't exists
-            if (!Directory.Exists(folderPath)) Directory.CreateDirectory(folderPath);
+            if (!Directory.Exists(folderPath)) Directory.CreateDirectory(fullPath);
 
-            var fullPath = Path.Combine(folderPath, uniqueName);
+            var filePath = Path.Combine(fullPath, uniqueName);
+            
+            await using (var fileStream = new FileStream(filePath, FileMode.Create))
+            {
+                await pdfFile.CopyToAsync(fileStream);
+            }
 
             var newFile = new PdfFile
             {
@@ -39,8 +44,8 @@ public class PdfService(VeloDbContext context) : IPDFService
                 UploadDate = DateTime.Now
             };
 
-            _context.PdfFiles.Add(newFile);
-            await _context.SaveChangesAsync();
+            context.PdfFiles.Add(newFile);
+            await context.SaveChangesAsync();
 
             return newFile;
         }
@@ -49,13 +54,13 @@ public class PdfService(VeloDbContext context) : IPDFService
             return null;
         }
     }
-
-    public async Task<PdfFile> GetPdfFileByIdAsync()
+    
+    public async Task<List<PdfFile>> GetPdfFilesAsync()
     {
-        throw new NotImplementedException();
+        return await context.PdfFiles.ToListAsync();
     }
 
-    public async Task<List<PdfFile>> GetPdfFilesAsync()
+    public async Task<PdfFile> GetPdfFileByIdAsync()
     {
         throw new NotImplementedException();
     }

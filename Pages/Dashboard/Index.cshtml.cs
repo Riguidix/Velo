@@ -1,21 +1,18 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
 
 using Velo.Models;
-using Velo.Models.Dtos;
-using Velo.Services;
 using Velo.Services.Interfaces;
 
 namespace Velo.Pages.Dashboard;
 
-public class Index(VeloDbContext context, IPDFService pdfService) : PageModel
+public class Index(IPDFService pdfService) : PageModel
 {
     public List<PdfFile> PdfFiles { get; set; } = [];
 
     public async Task<IActionResult> OnGet()
     {
-        PdfFiles = await context.PdfFiles.ToListAsync();
+        PdfFiles = await pdfService.GetPdfFilesAsync();
 
         return Page();
     }
